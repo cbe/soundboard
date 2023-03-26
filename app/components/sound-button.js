@@ -1,9 +1,28 @@
-import { LitElement, html } from "../dependencies/lit-core.min.js";
+import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 
 export class SoundButton extends LitElement {
   static properties = {
     audioFile: { type: String, attribute: "audio-file" },
-  };
+  }
+
+  static styles = css`
+    button {
+      appearance: none;
+      border: none;
+      padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+      border-radius: calc(var(--spacing) / 4);
+      background-color: var(--c-surface0);
+      color: var(--c-text);
+      border: var(--border-width) solid var(--c-pink);
+    }
+    button:hover,
+    button:focus {
+      outline: none;
+      cursor: pointer;
+      border-color: var(--c-teal);
+      box-shadow: 0 0 5px var(--c-teal);
+    }
+  `;
 
   constructor() {
     super();

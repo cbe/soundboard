@@ -5,33 +5,128 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Soundboard</title>
   <script src="./components/sound-button.js" type="module"></script>
+  <style>
+    :root {
+      --spacing: 1rem;
+      --border-width: 2px;
+
+      --c-text: #c6d0f5;
+      --c-base: #303446;
+      --c-surface0: #414559;
+      --c-green: #a6d189;
+      --c-rosewater: #f2d5cf;
+      --c-pink: #f4b8e4;
+      --c-maroon: #ea999c;
+      --c-teal: #81c8be;
+      --c-lavender: #babbf1;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --c-text: #4c4f69;
+        --c-base: #eff1f5;
+        --c-surface0: #ccd0da;
+        --c-green: #40a02b;
+        --c-rosewater: #dc8a78;
+        --c-pink: #ea76cb;
+        --c-maroon: #e64553;
+        --c-teal: #179299;
+        --c-lavender: #7287fd;
+      }
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    * {
+      margin: 0;
+    }
+    img, picture, video, canvas, svg {
+      display: block;
+      max-width: 100%;
+    }
+    input, button, textarea, select {
+      font: inherit;
+    }
+
+    html,
+    body {
+      font-size: 20px;
+      background-color: var(--c-base);
+      color: var(--c-text);
+    }
+
+    body {
+      max-width: 64rem;
+      margin-left: auto;
+      margin-right: auto;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: var(--spacing);
+      margin-bottom: var(--spacing);
+      border-bottom: var(--border-width) solid var(--c-rosewater);
+    }
+
+    .app-heading {
+      color: var(--c-green);
+    }
+
+    .main {
+      padding-left: var(--spacing);
+      padding-right: var(--spacing);
+      padding-bottom: var(--spacing);
+    }
+
+    .list-heading {
+      margin-bottom: calc(var(--spacing) / 2);
+    }
+    .list-heading:nth-of-type(5n+1) { color: var(--c-rosewater); }
+    .list-heading:nth-of-type(5n+2) { color: var(--c-pink); }
+    .list-heading:nth-of-type(5n+3) { color: var(--c-maroon); }
+    .list-heading:nth-of-type(5n+4) { color: var(--c-teal); }
+    .list-heading:nth-of-type(5n+5) { color: var(--c-lavender); }
+
+    .list {
+      list-style-type: none;
+      padding-left: 0;
+      display: flex;
+      gap: calc(var(--spacing) / 2);
+      flex-wrap: wrap;
+    }
+    .list:not(:last-child) {
+      margin-bottom: var(--spacing);
+    }
+  </style>
 </head>
 <body>
-  <h1>Soundboard</h1>
-
-  <main>
-    <ul>
-      <sound-button audio-file="./audio-files/seidla-siggi.mp3">Seidla Siggi</sound-button>
-      <sound-button audio-file="./audio-files/andreas-bleibt-alles-so.mp3">Bleibt alles so</sound-button>
-      <sound-button audio-file="./audio-files/andreas-beruhigt-hab-ich-mich-jetzt-nicht.mp3">Kaffee getrunken</sound-button>
-      <sound-button audio-file="./audio-files/ok-google.mp3">Tell me a joke</sound-button>
+  <header class="header">
+    <h1 class="app-heading">Soundboard</h1>
+  </header>
+  <main class="main">
+    <ul class="list">
+      <li><sound-button audio-file="./audio-files/seidla-siggi.mp3">Seidla Siggi</sound-button></li>
+      <li><sound-button audio-file="./audio-files/andreas-bleibt-alles-so.mp3">Bleibt alles so</sound-button></li>
+      <li><sound-button audio-file="./audio-files/andreas-beruhigt-hab-ich-mich-jetzt-nicht.mp3">Kaffee getrunken</sound-button></li>
+      <li><sound-button audio-file="./audio-files/ok-google.mp3">Tell me a joke</sound-button></li>
     </ul>
 
-    <h2>Captain Holt</h2>
-    <ul>
-      <sound-button audio-file="./audio-files/holt-goat.mp3">The GOAT</sound-button>
-      <sound-button audio-file="./audio-files/holt-bingpot.mp3">Bingpot!</sound-button>
-      <sound-button audio-file="./audio-files/holt-dirtbag.mp3">Dirtbag</sound-button>
-      <sound-button audio-file="./audio-files/holt-cowabunga.mp3">Cowabunga</sound-button>
-      <sound-button audio-file="./audio-files/holt-punk.mp3">Punk</sound-button>
-      <sound-button audio-file="./audio-files/holt-unleash-the-beast.mp3">Unleash the beast</sound-button>
+    <h2 class="list-heading">Captain Holt</h2>
+    <ul class="list">
+      <li><sound-button audio-file="./audio-files/holt-goat.mp3">The GOAT</sound-button></li>
+      <li><sound-button audio-file="./audio-files/holt-bingpot.mp3">Bingpot!</sound-button></li>
+      <li><sound-button audio-file="./audio-files/holt-dirtbag.mp3">Dirtbag</sound-button></li>
+      <li><sound-button audio-file="./audio-files/holt-cowabunga.mp3">Cowabunga</sound-button></li>
+      <li><sound-button audio-file="./audio-files/holt-punk.mp3">Punk</sound-button></li>
+      <li><sound-button audio-file="./audio-files/holt-unleash-the-beast.mp3">Unleash the beast</sound-button></li>
     </ul>
 
-    <h2>Peralta</h2>
-    <ul>
-      <sound-button audio-file="./audio-files/peralta-skibba-uncomfortable.mp3">Skibba skop skoop... uncomfortable</sound-button>
-      <sound-button audio-file="./audio-files/peralta-cool-cool-no-doubt.mp3">Cool cool cool... no doubt</sound-button>
-      <sound-button audio-file="./audio-files/peralta-break-into-the-fbi.mp3">Let's break into the FBI</sound-button>
+    <h2 class="list-heading">Peralta</h2>
+    <ul class="list">
+      <li><sound-button audio-file="./audio-files/peralta-skibba-uncomfortable.mp3">Skibba skop skoop... uncomfortable</sound-button></li>
+      <li><sound-button audio-file="./audio-files/peralta-cool-cool-no-doubt.mp3">Cool cool cool... no doubt</sound-button></li>
+      <li><sound-button audio-file="./audio-files/peralta-break-into-the-fbi.mp3">Let's break into the FBI</sound-button></li>
     </ul>
   </main>
 </body>
