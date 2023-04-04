@@ -9,11 +9,13 @@ export class SoundButton extends LitElement {
     button {
       appearance: none;
       border: none;
-      padding: calc(var(--spacing) / 3) calc(var(--spacing) / 2);
+      padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
       border-radius: calc(var(--spacing) / 4);
       background-color: var(--c-surface0);
       color: var(--c-text);
       border: var(--border-width) solid var(--c-pink);
+      width: 100%;
+      height: 100%;
     }
     button:hover,
     button:focus {

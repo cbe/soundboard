@@ -92,9 +92,18 @@
     .list {
       list-style-type: none;
       padding-left: 0;
-      display: flex;
+      display: grid;
       gap: calc(var(--spacing) / 2);
-      flex-wrap: wrap;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 30rem) {
+      .list { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 35rem) {
+      .list { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 40rem) {
+      .list { grid-template-columns: repeat(6, 1fr); }
     }
     .list:not(:last-child) {
       margin-bottom: var(--spacing);
