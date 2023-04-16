@@ -1,0 +1,106 @@
+:root {
+  --spacing: 1rem;
+  --border-width: 2px;
+
+  --c-text: #c6d0f5;
+  --c-base: #303446;
+  --c-surface0: #414559;
+  --c-green: #a6d189;
+  --c-rosewater: #f2d5cf;
+  --c-pink: #f4b8e4;
+  --c-maroon: #ea999c;
+  --c-teal: #81c8be;
+  --c-lavender: #babbf1;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --c-text: #4c4f69;
+    --c-base: #eff1f5;
+    --c-surface0: #ccd0da;
+    --c-green: #40a02b;
+    --c-rosewater: #dc8a78;
+    --c-pink: #ea76cb;
+    --c-maroon: #e64553;
+    --c-teal: #179299;
+    --c-lavender: #7287fd;
+  }
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+html,
+body {
+  font-size: 20px;
+  background-color: var(--c-base);
+  color: var(--c-text);
+}
+
+body {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+
+  display: flex;
+  flex-direction: column;
+  hyphens: auto;
+}
+
+.header {
+  padding: var(--spacing);
+  margin-bottom: var(--spacing);
+  border-bottom: var(--border-width) solid var(--c-rosewater);
+}
+
+.app-heading {
+  color: var(--c-green);
+}
+
+.main {
+  padding-left: var(--spacing);
+  padding-right: var(--spacing);
+  padding-bottom: var(--spacing);
+}
+
+.list-heading {
+  margin-bottom: calc(var(--spacing) / 2);
+}
+.list-heading:nth-of-type(5n+1) { color: var(--c-rosewater); }
+.list-heading:nth-of-type(5n+2) { color: var(--c-pink); }
+.list-heading:nth-of-type(5n+3) { color: var(--c-maroon); }
+.list-heading:nth-of-type(5n+4) { color: var(--c-teal); }
+.list-heading:nth-of-type(5n+5) { color: var(--c-lavender); }
+
+.list {
+  list-style-type: none;
+  padding-left: 0;
+  display: grid;
+  gap: calc(var(--spacing) / 2);
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 30rem) {
+  .list { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 35rem) {
+  .list { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 40rem) {
+  .list { grid-template-columns: repeat(6, 1fr); }
+}
+.list:not(:last-child) {
+  margin-bottom: var(--spacing);
+}
