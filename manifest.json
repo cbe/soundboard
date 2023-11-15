@@ -1,0 +1,16 @@
+{
+  "name": "Soundboard",
+  "short_name": "Soundboard",
+  "description": "A simple soundboard for all things memes",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#303446",
+  "categories": ["memes", "soundboard"],
+  "icons": [
+    {
+      "src": "./icons/maskable-icon.svg",
+      "sizes": "any",
+      "purpose": "maskable"
+    }
+  ]
+}
