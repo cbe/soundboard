@@ -3,6 +3,7 @@ import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 export class SoundButton extends LitElement {
   static properties = {
     audioFile: { type: String, attribute: "audio-file" },
+    audioFileAvailable: { type: Boolean }
   }
 
   static styles = css`
@@ -29,12 +30,12 @@ export class SoundButton extends LitElement {
   constructor() {
     super();
     this.audioFile = "";
+    this.audioFileAvailable = false;
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    this.audioElement = new Audio(this.audioFile);
     this.addEventListener("click", this.playAudioFile);
   }
 
@@ -44,6 +45,11 @@ export class SoundButton extends LitElement {
   }
 
   async playAudioFile() {
+    if (!this.audioFileAvailable) {
+      this.audioElement = new Audio(this.audioFile);
+      this.audioFileAvailable = true;
+    }
+
     return this.audioElement.play();
   }
 
