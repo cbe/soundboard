@@ -102,23 +102,28 @@ export class SoundButton extends LitElement {
   handleDrop(event) {
     event.preventDefault();
 
-    const { audioFile, title } = JSON
-      .parse(event.dataTransfer.getData("text/plain") ?? "{}");
+    try {
+      const { audioFile, title } = JSON
+        .parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
-    const isValid = audioFile && audioFile !== "" && title;
-    const alreadyFavorited = this._favorites
-      .findIndex(({ audioFile: searchAudioFile }) =>
-        searchAudioFile === audioFile) !== -1;
+      const isValid = audioFile && audioFile !== "" && title;
+      const alreadyFavorited = this._favorites
+        .findIndex(({ audioFile: searchAudioFile }) =>
+          searchAudioFile === audioFile) !== -1;
 
-    if (!isValid || alreadyFavorited) {
-      this._beingTargeted = false;
-      return;
+      if (!isValid || alreadyFavorited) {
+        this._beingTargeted = false;
+        return;
+      }
+
+      this._favorites = this._favorites.concat([{ audioFile, title }]);
+
+      window.localStorage.setItem("favorites", JSON.stringify(this._favorites));
+    }
+    catch (_error) {
     }
 
-    this._favorites = this._favorites.concat([{ audioFile, title }]);
     this._beingTargeted = false;
-
-    window.localStorage.setItem("favorites", JSON.stringify(this._favorites));
   }
 
   handleDragLeave(event) {
