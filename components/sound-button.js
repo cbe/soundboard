@@ -56,7 +56,6 @@ export class SoundButton extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-
     this.addEventListener("click", this.playAudioFile);
   }
 
