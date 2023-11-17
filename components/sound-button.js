@@ -7,23 +7,44 @@ export class SoundButton extends LitElement {
   }
 
   static styles = css`
-    button {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .button {
       appearance: none;
-      border: none;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
       padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-      border-radius: calc(var(--spacing) / 4);
+      border-radius: var(--border-radius);
       background-color: var(--c-surface0);
       color: var(--c-text);
       border: var(--border-width) solid var(--c-pink);
       width: 100%;
       height: 100%;
     }
-    button:hover,
-    button:focus {
-      outline: none;
+    .button:hover,
+    .button:focus {
       cursor: pointer;
       border-color: var(--c-teal);
       box-shadow: 0 0 5px var(--c-teal);
+    }
+
+    .button-content {
+      flex: 1;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .button-text {
+      pointer-events: none;
     }
   `;
 
@@ -53,9 +74,27 @@ export class SoundButton extends LitElement {
     return this.audioElement.play();
   }
 
+  handleDragStart(event) {
+    event.dataTransfer.setData("text/plain", JSON.stringify({
+      audioFile: this.audioFile,
+      title: this.innerText,
+    }));
+    event.dataTransfer.effectAllowed = "copy";
+  }
+
   render() {
-    return html`<button>
-      <slot></slot>
+    return html`<button
+      class="button"
+    >
+      <span
+        class="button-content"
+        draggable="true"
+        @dragstart="${this.handleDragStart}"
+      >
+        <span class="button-text">
+          <slot></slot>
+        </span>
+      </span>
     </button>`;
   }
 }

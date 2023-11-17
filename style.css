@@ -1,6 +1,8 @@
 :root {
   --spacing: 1rem;
+  --border-radius: calc(var(--spacing) / 4);
   --border-width: 2px;
+  --animation-duration: 250ms;
 
   --c-text: #c6d0f5;
   --c-base: #303446;
@@ -23,6 +25,11 @@
     --c-maroon: #e64553;
     --c-teal: #179299;
     --c-lavender: #7287fd;
+  }
+}
+@media (prefers-reduced-motion) {
+  :root {
+    --animation-duration: 0ms;
   }
 }
 
@@ -75,6 +82,13 @@ body {
   padding-left: var(--spacing);
   padding-right: var(--spacing);
   padding-bottom: var(--spacing);
+}
+
+.separator {
+  border: none;
+  background-color: var(--c-surface0);
+  height: var(--border-width);
+  margin-bottom: var(--spacing);
 }
 
 .list-heading {
