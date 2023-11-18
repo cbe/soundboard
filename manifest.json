@@ -8,8 +8,9 @@
   "categories": ["memes", "soundboard"],
   "icons": [
     {
-      "src": "./icons/maskable-icon.svg",
+      "src": "./icons/maskable-icon.png",
       "sizes": "any",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]
