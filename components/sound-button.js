@@ -41,6 +41,7 @@ export class SoundButton extends LitElement {
       align-items: center;
       justify-content: center;
       text-align: center;
+      font-size: var(--button-font-size);
     }
 
     .button-text {

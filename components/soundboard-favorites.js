@@ -51,6 +51,7 @@ export class SoundButton extends LitElement {
       border-radius: var(--border-radius);
       background-color: transparent;
       user-select: none;
+      font-size: var(--button-font-size);
     }
     .dropzone--active {
       background-color: var(--c-surface0);

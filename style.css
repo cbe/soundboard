@@ -3,6 +3,9 @@
   --border-radius: calc(var(--spacing) / 4);
   --border-width: 2px;
   --animation-duration: 250ms;
+  --heading-font-family: serif;
+  --main-font-family: sans-serif;
+  --button-font-size: 0.85rem;
 
   --c-text: #c6d0f5;
   --c-base: #303446;
@@ -75,6 +78,7 @@ body {
 
 .app-heading {
   color: var(--c-green);
+  font-family: var(--heading-font-family);
 }
 
 .main {
@@ -82,6 +86,7 @@ body {
   padding-left: var(--spacing);
   padding-right: var(--spacing);
   padding-bottom: var(--spacing);
+  font-family: var(--main-font-family);
 }
 
 .separator {
@@ -93,6 +98,7 @@ body {
 
 .list-heading {
   margin-bottom: calc(var(--spacing) / 2);
+  font-family: var(--heading-font-family);
 }
 .list-heading:nth-of-type(5n+1) { color: var(--c-rosewater); }
 .list-heading:nth-of-type(5n+2) { color: var(--c-pink); }
