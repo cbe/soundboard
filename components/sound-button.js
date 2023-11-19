@@ -7,32 +7,10 @@ export class SoundButton extends LitElement {
   }
 
   static styles = css`
-    * {
-      box-sizing: border-box;
-      margin: 0;
-    }
-
-    .button {
-      appearance: none;
-      outline: none;
+    button {
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-      border-radius: var(--border-radius);
-      background-color: var(--c-surface0);
-      color: var(--c-text);
-      border: var(--border-width) solid var(--c-pink);
-      width: 100%;
-      height: 100%;
-      font-size: var(--button-font-size);
-    }
-    .button:hover,
-    .button:focus {
-      cursor: pointer;
-      border-color: var(--c-teal);
-      box-shadow: 0 0 5px var(--c-teal);
     }
 
     .button-content {
@@ -75,18 +53,18 @@ export class SoundButton extends LitElement {
   }
 
   render() {
-    return html`<button
-      class="button"
-    >
-      <span
-        class="button-content"
-        draggable="true"
-      >
-        <span class="button-text">
-          <slot></slot>
+    return html`
+      <button part="button">
+        <span
+          class="button-content"
+          draggable="true"
+        >
+          <span class="button-text">
+            <slot></slot>
+          </span>
         </span>
-      </span>
-    </button>`;
+      </button>
+    `;
   }
 }
 customElements.define("sound-button", SoundButton);

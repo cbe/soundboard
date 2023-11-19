@@ -127,3 +127,26 @@ body {
 .list:not(:last-child) {
   margin-bottom: var(--spacing);
 }
+
+sound-button::part(button),
+soundboard-favorites::part(sound-button) {
+  appearance: none;
+  outline: none;
+  text-align: center;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  border-radius: var(--border-radius);
+  background-color: var(--c-surface0);
+  color: var(--c-text);
+  border: var(--border-width) solid var(--c-pink);
+  width: 100%;
+  height: 100%;
+  font-size: var(--button-font-size);
+}
+sound-button::part(button):hover,
+sound-button::part(button):focus,
+soundboard-favorites::part(sound-button):hover,
+soundboard-favorites::part(sound-button):focus {
+  cursor: pointer;
+  border-color: var(--c-teal);
+  box-shadow: 0 0 5px var(--c-teal);
+}

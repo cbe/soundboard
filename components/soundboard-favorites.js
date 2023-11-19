@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 
-export class SoundButton extends LitElement {
+export class SoundboardFavorites extends LitElement {
   static properties = {
     _favorites: { type: Array, state: true },
     _beingTargeted: { type: Boolean, state: true },
@@ -111,7 +111,10 @@ export class SoundButton extends LitElement {
       <sound-button
         @dragstart="${dragStart}"
         @dragend="${dragEnd}"
-        audio-file="${audioFile}">${title}
+        audio-file="${audioFile}"
+        exportparts="button: sound-button"
+      >
+        ${title}
       </sound-button>
     </li>`;
   }
@@ -194,4 +197,4 @@ export class SoundButton extends LitElement {
     `;
   }
 }
-customElements.define("soundboard-favorites", SoundButton);
+customElements.define("soundboard-favorites", SoundboardFavorites);
