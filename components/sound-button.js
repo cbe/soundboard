@@ -3,7 +3,7 @@ import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 export class SoundButton extends LitElement {
   static properties = {
     audioFile: { type: String, attribute: "audio-file" },
-    audioFileAvailable: { type: Boolean }
+    audioFileAvailable: { type: Boolean },
   }
 
   static styles = css`
@@ -26,6 +26,7 @@ export class SoundButton extends LitElement {
       border: var(--border-width) solid var(--c-pink);
       width: 100%;
       height: 100%;
+      font-size: var(--button-font-size);
     }
     .button:hover,
     .button:focus {
@@ -41,7 +42,6 @@ export class SoundButton extends LitElement {
       align-items: center;
       justify-content: center;
       text-align: center;
-      font-size: var(--button-font-size);
     }
 
     .button-text {
@@ -74,14 +74,6 @@ export class SoundButton extends LitElement {
     return this.audioElement.play();
   }
 
-  handleDragStart(event) {
-    event.dataTransfer.setData("text/plain", JSON.stringify({
-      audioFile: this.audioFile,
-      title: this.innerText,
-    }));
-    event.dataTransfer.effectAllowed = "copy";
-  }
-
   render() {
     return html`<button
       class="button"
@@ -89,7 +81,6 @@ export class SoundButton extends LitElement {
       <span
         class="button-content"
         draggable="true"
-        @dragstart="${this.handleDragStart}"
       >
         <span class="button-text">
           <slot></slot>

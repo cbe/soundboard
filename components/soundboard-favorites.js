@@ -4,6 +4,7 @@ export class SoundButton extends LitElement {
   static properties = {
     _favorites: { type: Array, state: true },
     _beingTargeted: { type: Boolean, state: true },
+    _isRemoving: { type: Boolean, state: true },
   }
 
   static styles = css`
@@ -58,12 +59,16 @@ export class SoundButton extends LitElement {
       border-color: var(--c-green);
       animation: var(--animation-duration) ease-out 1 wiggle;
     }
+    .dropzone--removing {
+      border-color: var(--c-red);
+    }
   `;
 
   constructor() {
     super();
     this._beingTargeted = false;
     this._favorites = [];
+    this._isRemoving = false;
   }
 
   connectedCallback() {
@@ -80,13 +85,34 @@ export class SoundButton extends LitElement {
     return this._favorites.length > 0;
   }
 
+  resetOptics() {
+    this._beingTargeted = false;
+    this._isRemoving = false;
+  }
+
   renderFavourite({ audioFile, title }) {
     if (!audioFile || !title) {
       return null;
     }
 
+    const dragStart = (event) => {
+      this._isRemoving = true;
+      event.dataTransfer.setData("text/plain", JSON.stringify({
+        audioFile,
+        removeFromFavorites: true,
+      }));
+    };
+
+    const dragEnd = (event) => {
+      this.resetOptics();
+    };
+
     return html`<li>
-      <sound-button audio-file="${audioFile}">${title}</sound-button>
+      <sound-button
+        @dragstart="${dragStart}"
+        @dragend="${dragEnd}"
+        audio-file="${audioFile}">${title}
+      </sound-button>
     </li>`;
   }
 
@@ -104,8 +130,18 @@ export class SoundButton extends LitElement {
     event.preventDefault();
 
     try {
-      const { audioFile, title } = JSON
+      const { audioFile, title, removeFromFavorites = false } = JSON
         .parse(event.dataTransfer.getData("text/plain") ?? "{}");
+
+      if (removeFromFavorites) {
+        this._favorites = this._favorites.filter((favorite) => favorite.audioFile !== audioFile);
+
+        window.localStorage.setItem("favorites", JSON.stringify(this._favorites));
+
+        this.resetOptics();
+
+        return;
+      }
 
       const isValid = audioFile && audioFile !== "" && title;
       const alreadyFavorited = this._favorites
@@ -113,7 +149,8 @@ export class SoundButton extends LitElement {
           searchAudioFile === audioFile) !== -1;
 
       if (!isValid || alreadyFavorited) {
-        this._beingTargeted = false;
+        this.resetOptics();
+
         return;
       }
 
@@ -124,7 +161,7 @@ export class SoundButton extends LitElement {
     catch (_error) {
     }
 
-    this._beingTargeted = false;
+    this.resetOptics();
   }
 
   handleDragLeave(event) {
@@ -136,6 +173,7 @@ export class SoundButton extends LitElement {
     const dropzoneClass = [
       "dropzone",
       this._beingTargeted ? "dropzone--active" : "",
+      this._isRemoving ? "dropzone--removing" : "",
     ].join(" ").trim();
 
     return html`
@@ -149,8 +187,8 @@ export class SoundButton extends LitElement {
           @drop="${this.handleDrop}"
           @dragleave="${this.handleDragLeave}"
         >
-          <span>🫳</span>
-          <span>Drop favorites here</span>
+          <span>${this._isRemoving ? "🗑️" : "🫳"}</span>
+          <span>${this._isRemoving ? "Drop to remove" : "Drop favorites here"}</span>
         </li>
       </ul>
     `;
