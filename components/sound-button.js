@@ -43,6 +43,14 @@ export class SoundButton extends LitElement {
     this.removeEventListener("click", this.playAudioFile);
   }
 
+  attributeChangedCallback(...args) {
+    super.attributeChangedCallback(...args);
+
+    if (this._audioFileAvailable) {
+      this.audioElement = new Audio(this.audioFile);
+    }
+  }
+
   async playAudioFile(event) {
     if (!this._audioFileAvailable) {
       this.audioElement = new Audio(this.audioFile);

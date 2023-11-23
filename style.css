@@ -2,6 +2,7 @@
   --spacing: 1rem;
   --border-radius: calc(var(--spacing) / 4);
   --border-width: 2px;
+  --box-shadow: 0 0 5px;
   --animation-duration: 250ms;
   --heading-font-family: serif;
   --main-font-family: sans-serif;
@@ -10,6 +11,7 @@
   --c-text: #c6d0f5;
   --c-base: #303446;
   --c-surface0: #414559;
+  --c-overlay2: #949cbb;
   --c-green: #a6d189;
   --c-rosewater: #f2d5cf;
   --c-pink: #f4b8e4;
@@ -23,6 +25,7 @@
     --c-text: #4c4f69;
     --c-base: #eff1f5;
     --c-surface0: #ccd0da;
+    --c-overlay2: #7c7f93;
     --c-green: #40a02b;
     --c-rosewater: #dc8a78;
     --c-pink: #ea76cb;
@@ -148,5 +151,5 @@ soundboard-favorites::part(sound-button):hover,
 soundboard-favorites::part(sound-button):focus {
   cursor: pointer;
   border-color: var(--c-teal);
-  box-shadow: 0 0 5px var(--c-teal);
+  box-shadow: var(--box-shadow) var(--c-teal);
 }

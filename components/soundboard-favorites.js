@@ -62,6 +62,27 @@ export class SoundboardFavorites extends LitElement {
     .dropzone--removing {
       border-color: var(--c-red);
     }
+
+    sound-button::part(button) {
+      position: relative;
+    }
+    sound-button.targeted::part(button) {
+      border-color: var(--c-overlay2) !important;
+      border-style: dashed !important;
+      box-shadow: unset !important;
+    }
+    sound-button.targeted::part(button)::before {
+      pointer-events: none;
+      position: absolute;
+      content: "📥";
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--c-surface0);
+      border-radius: var(--border-radius);
+    }
   `;
 
   constructor() {
@@ -85,6 +106,12 @@ export class SoundboardFavorites extends LitElement {
     return this._favorites.length > 0;
   }
 
+  findIndexOfAudioFile(searchAudioFile) {
+    return this._favorites
+      .findIndex(({ audioFile }) =>
+        audioFile === searchAudioFile);
+  }
+
   updateFavorites(favorites) {
     this._favorites = favorites;
     window.localStorage.setItem("favorites", JSON.stringify(favorites));
@@ -104,6 +131,7 @@ export class SoundboardFavorites extends LitElement {
       this._isRemoving = true;
       event.dataTransfer.setData("text/plain", JSON.stringify({
         audioFile,
+        title,
         removeFromFavorites: true,
       }));
     };
@@ -112,11 +140,61 @@ export class SoundboardFavorites extends LitElement {
       this.resetOptics();
     };
 
+    const dragOverFavorite = (event) => {
+      event.preventDefault();
+
+      event.dataTransfer.dropEffect = "copy";
+      event.target.classList.add("targeted");
+    };
+
+    const dragLeaveFavorite = (event) => {
+      event.preventDefault();
+
+      event.target.classList.remove("targeted");
+    };
+
+    const dropOnFavorite = (event) => {
+      event.preventDefault();
+
+      try {
+        const {
+          audioFile: draggedAudioFile,
+          title: draggedTitle
+        } = JSON.parse(event.dataTransfer.getData("text/plain") ?? "{}");
+
+        const indexOfTargetedFavorite = this.findIndexOfAudioFile(audioFile);
+        const indexOfDraggedFavorite = this.findIndexOfAudioFile(draggedAudioFile);
+        const shouldReplace = indexOfDraggedFavorite === -1;
+
+        const newFavorites = shouldReplace
+          ? this._favorites.map((favorite, index) => index === indexOfTargetedFavorite
+            ? ({
+              audioFile: draggedAudioFile,
+              title: draggedTitle,
+            })
+            : favorite)
+          : this._favorites
+            .toSpliced(indexOfDraggedFavorite, 1)
+            .toSpliced(indexOfTargetedFavorite, 0, {
+              audioFile: draggedAudioFile,
+              title: draggedTitle,
+            });
+
+        this.updateFavorites(newFavorites);
+        event.target.classList.remove("targeted");
+      }
+      catch (_error) {
+      }
+    };
+
     return html`
       <li>
         <sound-button
           @dragstart="${dragStartFavorite}"
           @dragend="${dragEndFavorite}"
+          @dragover="${dragOverFavorite}"
+          @dragleave="${dragLeaveFavorite}"
+          @drop="${dropOnFavorite}"
           audio-file="${audioFile}"
           exportparts="button: sound-button"
         >
