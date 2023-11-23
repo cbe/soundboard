@@ -85,6 +85,11 @@ export class SoundboardFavorites extends LitElement {
     return this._favorites.length > 0;
   }
 
+  updateFavorites(favorites) {
+    this._favorites = favorites;
+    window.localStorage.setItem("favorites", JSON.stringify(favorites));
+  }
+
   resetOptics() {
     this._beingTargeted = false;
     this._isRemoving = false;
@@ -95,7 +100,7 @@ export class SoundboardFavorites extends LitElement {
       return null;
     }
 
-    const dragStart = (event) => {
+    const dragStartFavorite = (event) => {
       this._isRemoving = true;
       event.dataTransfer.setData("text/plain", JSON.stringify({
         audioFile,
@@ -103,20 +108,22 @@ export class SoundboardFavorites extends LitElement {
       }));
     };
 
-    const dragEnd = (event) => {
+    const dragEndFavorite = (event) => {
       this.resetOptics();
     };
 
-    return html`<li>
-      <sound-button
-        @dragstart="${dragStart}"
-        @dragend="${dragEnd}"
-        audio-file="${audioFile}"
-        exportparts="button: sound-button"
-      >
-        ${title}
-      </sound-button>
-    </li>`;
+    return html`
+      <li>
+        <sound-button
+          @dragstart="${dragStartFavorite}"
+          @dragend="${dragEndFavorite}"
+          audio-file="${audioFile}"
+          exportparts="button: sound-button"
+        >
+          ${title}
+        </sound-button>
+      </li>
+    `;
   }
 
   handleDragEnter(event) {
@@ -137,10 +144,10 @@ export class SoundboardFavorites extends LitElement {
         .parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
       if (removeFromFavorites) {
-        this._favorites = this._favorites.filter((favorite) => favorite.audioFile !== audioFile);
+        const newFavorites = this._favorites
+          .filter((favorite) => favorite.audioFile !== audioFile);
 
-        window.localStorage.setItem("favorites", JSON.stringify(this._favorites));
-
+        this.updateFavorites(newFavorites);
         this.resetOptics();
 
         return;
@@ -157,9 +164,8 @@ export class SoundboardFavorites extends LitElement {
         return;
       }
 
-      this._favorites = this._favorites.concat([{ audioFile, title }]);
-
-      window.localStorage.setItem("favorites", JSON.stringify(this._favorites));
+      const newFavorites = this._favorites.concat([{ audioFile, title }]);
+      this.updateFavorites(newFavorites);
     }
     catch (_error) {
     }
