@@ -121,9 +121,6 @@ body {
 @container (min-width: 30rem) {
   .list { grid-template-columns: repeat(3, 1fr); }
 }
-@container (min-width: 35rem) {
-  .list { grid-template-columns: repeat(3, 1fr); }
-}
 @container (min-width: 40rem) {
   .list { grid-template-columns: repeat(6, 1fr); }
 }

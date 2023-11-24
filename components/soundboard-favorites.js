@@ -35,9 +35,6 @@ export class SoundboardFavorites extends LitElement {
     @container (min-width: 30rem) {
       .favorites { grid-template-columns: repeat(3, 1fr); }
     }
-    @container (min-width: 35rem) {
-      .favorites { grid-template-columns: repeat(3, 1fr); }
-    }
     @container (min-width: 40rem) {
       .favorites { grid-template-columns: repeat(6, 1fr); }
     }
@@ -57,6 +54,10 @@ export class SoundboardFavorites extends LitElement {
       border-color: var(--c-overlay2);
       border-style: dashed;
       box-shadow: unset;
+    }
+    .dropzone:is(:first-child) {
+      grid-column: 1 / -1;
+      min-height: clamp(3rem, 10vw, 5rem);
     }
     .dropzone--active {
       background-color: var(--c-surface0);
