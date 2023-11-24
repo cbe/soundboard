@@ -59,7 +59,7 @@ export class SoundboardFavorites extends LitElement {
       border-color: var(--c-green);
       animation: var(--animation-duration) ease-out 1 wiggle;
     }
-    .dropzone--removing {
+    .dropzone--removing.dropzone--active {
       border-color: var(--c-red);
     }
 
@@ -262,6 +262,12 @@ export class SoundboardFavorites extends LitElement {
       this._beingTargeted ? "dropzone--active" : "",
       this._isRemoving ? "dropzone--removing" : "",
     ].join(" ").trim();
+    const dropzoneIcon = this._isRemoving ? "🗑️" : "🫳";
+    const dropzoneText = this._isRemoving
+      ? "Remove"
+      : this.hasFavorites
+        ? "Add"
+        : "Drop favorites here";
 
     return html`
       <ul class="favorites">
@@ -274,8 +280,8 @@ export class SoundboardFavorites extends LitElement {
           @drop="${this.handleDrop}"
           @dragleave="${this.handleDragLeave}"
         >
-          <span>${this._isRemoving ? "🗑️" : "🫳"}</span>
-          <span>${this._isRemoving ? "Drop to remove" : "Drop favorites here"}</span>
+          <span>${dropzoneIcon}</span>
+          <span>${dropzoneText}</span>
         </li>
       </ul>
     `;
