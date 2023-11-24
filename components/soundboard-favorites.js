@@ -53,6 +53,10 @@ export class SoundboardFavorites extends LitElement {
       background-color: transparent;
       user-select: none;
       font-size: var(--button-font-size);
+
+      border-color: var(--c-overlay2);
+      border-style: dashed;
+      box-shadow: unset;
     }
     .dropzone--active {
       background-color: var(--c-surface0);
