@@ -9,6 +9,7 @@
   --button-font-size: 0.85rem;
 
   --c-text: #c6d0f5;
+  --c-mantle: #292c3c;
   --c-base: #303446;
   --c-surface0: #414559;
   --c-overlay2: #949cbb;
@@ -23,6 +24,7 @@
 @media (prefers-color-scheme: light) {
   :root {
     --c-text: #4c4f69;
+    --c-mantle: #dce0e8;
     --c-base: #eff1f5;
     --c-surface0: #ccd0da;
     --c-overlay2: #7c7f93;

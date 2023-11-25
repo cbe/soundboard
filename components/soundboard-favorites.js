@@ -39,6 +39,11 @@ export class SoundboardFavorites extends LitElement {
       .favorites { grid-template-columns: repeat(6, 1fr); }
     }
 
+    li:is(.dropzone--active),
+    li:has(sound-button.targeted) {
+      animation: var(--animation-duration) ease-out 1 wiggle;
+    }
+
     .dropzone {
       display: flex;
       align-items: center;
@@ -60,9 +65,8 @@ export class SoundboardFavorites extends LitElement {
       min-height: clamp(3rem, 10vw, 5rem);
     }
     .dropzone--active {
-      background-color: var(--c-surface0);
+      background-color: var(--c-mantle);
       border-color: var(--c-green);
-      animation: var(--animation-duration) ease-out 1 wiggle;
     }
     .dropzone--removing.dropzone--active {
       border-color: var(--c-red);
@@ -85,7 +89,7 @@ export class SoundboardFavorites extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--c-surface0);
+      background-color: var(--c-mantle);
       border-radius: var(--border-radius);
     }
   `;
