@@ -15,9 +15,11 @@
     <h1 class="app-heading">Soundboard</h1>
   </header>
   <main class="main">
-    <soundboard-favorites></soundboard-favorites>
+    <section class="favorites">
+      <soundboard-favorites></soundboard-favorites>
+    </section>
 
-    <hr class="separator" />
+    <hr class="separator" id="intersection-trigger" />
 
     <ul class="list">
       <li><sound-button audio-file="./audio-files/seidla-siggi.mp3">Seidla Siggi</sound-button></li>
@@ -159,6 +161,28 @@
       soundButtons.forEach((soundButton) => {
         soundButton.addEventListener("dragstart", dragSoundButton);
       });
+
+      const soundboardFavorites = document.querySelector("soundboard-favorites");
+      const intersectionTrigger = document.querySelector("#intersection-trigger");
+      const observerCallback = (entries, observer) => {
+        const intersectionElement = entries.find((entry) =>
+          entry.target === intersectionTrigger
+        );
+        const { isIntersecting, boundingClientRect } = intersectionElement;
+        const isAboveFold = boundingClientRect.top < 0;
+
+        if (!isIntersecting && isAboveFold) {
+          soundboardFavorites.setAttribute("minimal", true);
+        }
+        else {
+          soundboardFavorites.removeAttribute("minimal");
+        }
+      };
+      const observer = new IntersectionObserver(
+        observerCallback,
+        { root: null }
+      );
+      observer.observe(intersectionTrigger);
     });
   </script>
 </body>

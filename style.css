@@ -2,7 +2,8 @@
   --spacing: 1rem;
   --border-radius: calc(var(--spacing) / 4);
   --border-width: 2px;
-  --box-shadow: 0 0 5px;
+  --box-shadow: 0 0 calc(var(--spacing) / 4);
+  --box-shadow-bigger: 0 0 var(--spacing);
   --animation-duration: 250ms;
   --heading-font-family: serif;
   --main-font-family: sans-serif;
@@ -88,6 +89,10 @@ body {
   font-family: var(--heading-font-family);
 }
 
+.favorites {
+  margin-bottom: var(--spacing);
+}
+
 .main {
   container-type: inline-size;
   padding-left: var(--spacing);
@@ -151,4 +156,21 @@ soundboard-favorites::part(sound-button):focus {
   cursor: pointer;
   border-color: var(--c-teal);
   box-shadow: var(--box-shadow) var(--c-teal);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.favorites:has(soundboard-favorites[minimal="true"]) {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: var(--spacing);
+  animation: var(--animation-duration) ease-out 1 fade-in;
+}
+soundboard-favorites[minimal="true"]::part(dropzone) {
+  padding: var(--spacing) calc(var(--spacing) * 2);
+  box-shadow: var(--box-shadow-bigger) var(--c-mantle);
+  min-height: unset;
 }

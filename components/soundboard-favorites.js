@@ -2,6 +2,7 @@ import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 
 export class SoundboardFavorites extends LitElement {
   static properties = {
+    minimal: { type: Boolean, attribute: "minimal" },
     _favorites: { type: Array, state: true },
     _beingTargeted: { type: Boolean, state: true },
     _isRemoving: { type: Boolean, state: true },
@@ -26,7 +27,6 @@ export class SoundboardFavorites extends LitElement {
 
     .favorites {
       list-style-type: none;
-      margin-bottom: var(--spacing);
       padding-left: 0;
       display: grid;
       gap: calc(var(--spacing) / 2);
@@ -52,7 +52,7 @@ export class SoundboardFavorites extends LitElement {
       padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
       border: var(--border-width) solid var(--c-lavender);
       border-radius: var(--border-radius);
-      background-color: transparent;
+      background-color: var(--c-base);
       user-select: none;
       font-size: var(--button-font-size);
 
@@ -96,6 +96,7 @@ export class SoundboardFavorites extends LitElement {
 
   constructor() {
     super();
+    this.minimal = false;
     this._beingTargeted = false;
     this._favorites = [];
     this._isRemoving = false;
@@ -280,10 +281,14 @@ export class SoundboardFavorites extends LitElement {
 
     return html`
       <ul class="favorites">
-        ${this._favorites.map((favorite) => this.renderFavourite(favorite))}
+        ${this.minimal
+          ? null
+          : this._favorites.map((favorite) => this.renderFavourite(favorite))
+        }
 
         <li
           class="${dropzoneClass}"
+          part="dropzone"
           @dragenter="${this.handleDragEnter}"
           @dragover="${this.handleDragOver}"
           @drop="${this.handleDrop}"
