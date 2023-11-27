@@ -15,7 +15,7 @@
     <h1 class="app-heading">Soundboard</h1>
   </header>
   <main class="main">
-    <section class="favorites">
+    <section class="favorites" id="favorites">
       <soundboard-favorites></soundboard-favorites>
     </section>
 
@@ -162,6 +162,7 @@
         soundButton.addEventListener("dragstart", dragSoundButton);
       });
 
+      const favoritesContainer = document.querySelector("#favorites");
       const soundboardFavorites = document.querySelector("soundboard-favorites");
       const intersectionTrigger = document.querySelector("#intersection-trigger");
       const observerCallback = (entries, observer) => {
@@ -173,9 +174,11 @@
 
         if (!isIntersecting && isAboveFold) {
           soundboardFavorites.setAttribute("minimal", true);
+          favoritesContainer.classList.add("pinned");
         }
         else {
           soundboardFavorites.removeAttribute("minimal");
+          favoritesContainer.classList.remove("pinned");
         }
       };
       const observer = new IntersectionObserver(

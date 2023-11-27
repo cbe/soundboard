@@ -162,15 +162,17 @@ soundboard-favorites::part(sound-button):focus {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-.favorites:has(soundboard-favorites[minimal="true"]) {
+.favorites:where(.pinned, :has(soundboard-favorites[minimal="true"])) {
   display: flex;
   justify-content: center;
   position: sticky;
   top: var(--spacing);
   animation: var(--animation-duration) ease-out 1 fade-in;
+  pointer-events: none;
 }
 soundboard-favorites[minimal="true"]::part(dropzone) {
   padding: var(--spacing) calc(var(--spacing) * 2);
   box-shadow: var(--box-shadow-bigger) var(--c-mantle);
   min-height: unset;
+  pointer-events: all;
 }
