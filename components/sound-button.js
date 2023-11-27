@@ -3,6 +3,7 @@ import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 export class SoundButton extends LitElement {
   static properties = {
     audioFile: { type: String, attribute: "audio-file" },
+    repeatable: { type: Boolean, attribute: "repeatable" },
     _audioFileAvailable: { type: Boolean, state: true },
   }
 
@@ -30,6 +31,7 @@ export class SoundButton extends LitElement {
   constructor() {
     super();
     this.audioFile = "";
+    this.repeatable = false;
     this._audioFileAvailable = false;
   }
 
@@ -52,7 +54,7 @@ export class SoundButton extends LitElement {
   }
 
   async playAudioFile(event) {
-    if (!this._audioFileAvailable) {
+    if (!this._audioFileAvailable || this.repeatable) {
       this.audioElement = new Audio(this.audioFile);
       this._audioFileAvailable = true;
     }
