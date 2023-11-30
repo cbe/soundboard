@@ -146,7 +146,7 @@
 
   <script>
     window.addEventListener("load", () => {
-      const dragSoundButton = (event) => {
+      const onDragSoundButton = (event) => {
         const audioFile = event.target.getAttribute("audio-file");
         const title = event.target.innerText;
 
@@ -156,10 +156,26 @@
         }));
         event.dataTransfer.effectAllowed = "copy";
       };
+      const onCopy = (event) => {
+        const isMac = window.navigator.userAgentData
+          // not very well supported
+          ? window.navigator.userAgentData.platform === "Mac"
+          // deprecated
+          : window.navigator.platform.startsWith("Mac");
+        const cmdOrCtrl = isMac ? event.metaKey : event.ctrlKey;
+
+        if (cmdOrCtrl && event.key === "c") {
+          const audioFile = event.target.getAttribute("audio-file");
+          const url = new URL(audioFile, window.location);
+
+          window.navigator.clipboard.writeText(url);
+        }
+      };
 
       const soundButtons = document.querySelectorAll(".list sound-button");
       soundButtons.forEach((soundButton) => {
-        soundButton.addEventListener("dragstart", dragSoundButton);
+        soundButton.addEventListener("dragstart", onDragSoundButton);
+        soundButton.addEventListener("keydown", onCopy);
       });
 
       const favoritesContainer = document.querySelector("#favorites");
