@@ -3,6 +3,7 @@ import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 export class SoundboardFavorites extends LitElement {
   static properties = {
     minimal: { type: Boolean, attribute: "minimal" },
+    removed: { type: Array, attribute: "removed" },
     _favorites: { type: Array, state: true },
     _beingTargeted: { type: Boolean, state: true },
     _isRemoving: { type: Boolean, state: true },
@@ -97,6 +98,7 @@ export class SoundboardFavorites extends LitElement {
   constructor() {
     super();
     this.minimal = false;
+    this.removed = [];
     this._beingTargeted = false;
     this._favorites = [];
     this._isRemoving = false;
@@ -105,7 +107,11 @@ export class SoundboardFavorites extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    this._favorites = JSON.parse(window.localStorage.getItem("favorites")) ?? [];
+    const restoredFavorites = JSON.parse(window.localStorage.getItem("favorites")) ?? [];
+    const filteredFavorites = restoredFavorites
+      .filter((favorite) => !this.removed.includes(favorite.audioFile));
+
+    this.updateFavorites(filteredFavorites);
   }
 
   disconnectedCallback() {

@@ -16,7 +16,11 @@
   </header>
   <main class="main">
     <section class="favorites" id="favorites">
-      <soundboard-favorites></soundboard-favorites>
+      <soundboard-favorites
+        removed='[
+          "./audio-files/ich-muss-raus.webm"
+        ]'
+      ></soundboard-favorites>
     </section>
 
     <hr class="separator" id="intersection-trigger" />
@@ -32,7 +36,6 @@
       <li><sound-button audio-file="./audio-files/andreas-halt-stop.webm">Halt Stop!</sound-button></li>
       <li><sound-button audio-file="./audio-files/andreas-bleibt-alles-so.mp3">Bleibt alles so</sound-button></li>
       <li><sound-button audio-file="./audio-files/andreas-beruhigt-hab-ich-mich-jetzt-nicht.mp3">Kaffee getrunken</sound-button></li>
-      <li><sound-button audio-file="./audio-files/ich-muss-raus.webm">Ich muss raus</sound-button></li>
       <li><sound-button audio-file="./audio-files/schaumermal-was-wird.webm">Schaumer mal was wird</sound-button></li>
       <li><sound-button audio-file="./audio-files/weiss-ich-nich-digga.webm">Weiß ich nich, digga</sound-button></li>
       <li><sound-button audio-file="./audio-files/man-soll-kein-koks-ballern.webm">Man soll kein Koks ballern</sound-button></li>
