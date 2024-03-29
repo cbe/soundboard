@@ -3,6 +3,7 @@ import { LitElement, css, html } from "../dependencies/lit-core.min.js";
 export class SoundButton extends LitElement {
   static properties = {
     audioFile: { type: String, attribute: "audio-file" },
+    emoji: { type: String, attribute: "emoji" },
     repeatable: { type: Boolean, attribute: "repeatable" },
     _audioFileAvailable: { type: Boolean, state: true },
   }
@@ -20,6 +21,7 @@ export class SoundButton extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0.25rem;
       text-align: center;
     }
 
@@ -31,6 +33,7 @@ export class SoundButton extends LitElement {
   constructor() {
     super();
     this.audioFile = "";
+    this.emoji = "";
     this.repeatable = false;
     this._audioFileAvailable = false;
   }
@@ -69,6 +72,11 @@ export class SoundButton extends LitElement {
           class="button-content"
           draggable="true"
         >
+          ${this.emoji
+            ? html`<span class="button-emoji">${this.emoji}</span>`
+            : null
+          }
+
           <span class="button-text">
             <slot></slot>
           </span>

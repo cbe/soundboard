@@ -138,7 +138,7 @@ export class SoundboardFavorites extends LitElement {
     this._isRemoving = false;
   }
 
-  renderFavourite({ audioFile, title }) {
+  renderFavourite({ audioFile, title, emoji }) {
     if (!audioFile || !title) {
       return null;
     }
@@ -148,6 +148,7 @@ export class SoundboardFavorites extends LitElement {
       event.dataTransfer.setData("text/plain", JSON.stringify({
         audioFile,
         title,
+        emoji,
         removeFromFavorites: true,
       }));
     };
@@ -175,7 +176,8 @@ export class SoundboardFavorites extends LitElement {
       try {
         const {
           audioFile: draggedAudioFile,
-          title: draggedTitle
+          title: draggedTitle,
+          emoji: draggedEmoji,
         } = JSON.parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
         const indexOfTargetedFavorite = this.findIndexOfAudioFile(audioFile);
@@ -187,6 +189,7 @@ export class SoundboardFavorites extends LitElement {
             ? ({
               audioFile: draggedAudioFile,
               title: draggedTitle,
+              emoji: draggedEmoji,
             })
             : favorite)
           : this._favorites
@@ -194,6 +197,7 @@ export class SoundboardFavorites extends LitElement {
             .toSpliced(indexOfTargetedFavorite, 0, {
               audioFile: draggedAudioFile,
               title: draggedTitle,
+              emoji: draggedEmoji,
             });
 
         this.updateFavorites(newFavorites);
@@ -212,6 +216,7 @@ export class SoundboardFavorites extends LitElement {
           @dragleave="${dragLeaveFavorite}"
           @drop="${dropOnFavorite}"
           audio-file="${audioFile}"
+          emoji="${emoji}"
           exportparts="button: sound-button"
         >
           ${title}
@@ -234,7 +239,7 @@ export class SoundboardFavorites extends LitElement {
     event.preventDefault();
 
     try {
-      const { audioFile, title, removeFromFavorites = false } = JSON
+      const { audioFile, title, emoji, removeFromFavorites = false } = JSON
         .parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
       if (removeFromFavorites) {
@@ -248,20 +253,26 @@ export class SoundboardFavorites extends LitElement {
       }
 
       const isValid = audioFile && audioFile !== "" && title;
-      const alreadyFavorited = this._favorites
+      const existingFavoriteIndex = this._favorites
         .findIndex(({ audioFile: searchAudioFile }) =>
-          searchAudioFile === audioFile) !== -1;
+          searchAudioFile === audioFile);
+      const alreadyFavorited = existingFavoriteIndex !== -1
 
-      if (!isValid || alreadyFavorited) {
+      if (!isValid) {
         this.resetOptics();
 
         return;
       }
 
-      const newFavorites = this._favorites.concat([{ audioFile, title }]);
+      const newFavorite = { audioFile, title, emoji };
+      const newFavorites = alreadyFavorited
+        ? this._favorites.toSpliced(existingFavoriteIndex, 1, newFavorite)
+        : this._favorites.concat([newFavorite]);
+
       this.updateFavorites(newFavorites);
     }
-    catch (_error) {
+    catch (error) {
+      console.warn("Error while trying to add or remove a sound button. Full error", error)
     }
 
     this.resetOptics();
