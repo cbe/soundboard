@@ -31,7 +31,9 @@ export class SoundboardFavorites extends LitElement {
       padding-left: 0;
       display: grid;
       gap: calc(var(--spacing) / 2);
-      grid-template-columns: repeat(2, 1fr);
+    }
+    @container (min-width: 16rem) {
+      .favorites { grid-template-columns: repeat(2, 1fr); }
     }
     @container (min-width: 30rem) {
       .favorites { grid-template-columns: repeat(3, 1fr); }

@@ -123,7 +123,9 @@ body {
   padding-left: 0;
   display: grid;
   gap: calc(var(--spacing) / 2);
-  grid-template-columns: repeat(2, 1fr);
+}
+@container (min-width: 16rem) {
+  .list { grid-template-columns: repeat(2, 1fr); }
 }
 @container (min-width: 30rem) {
   .list { grid-template-columns: repeat(3, 1fr); }
