@@ -6,7 +6,6 @@ export class SoundButton extends LitElement {
     emoji: { type: String, attribute: "emoji" },
     repeatable: { type: Boolean, attribute: "repeatable" },
 
-    _audioFileAvailable: { type: Boolean, state: true },
     _audioElement: { type: HTMLAudioElement, state: true },
   };
 
@@ -53,24 +52,23 @@ export class SoundButton extends LitElement {
     this.emoji = "";
     this.repeatable = false;
 
-    this._audioFileAvailable = false;
     this._audioElement = undefined;
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener("click", this.playAudioFile);
+    this.addEventListener("click", this.playOrStopSound);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener("click", this.playAudioFile);
+    this.removeEventListener("click", this.playOrStopSound);
   }
 
   attributeChangedCallback(...args) {
     super.attributeChangedCallback(...args);
 
-    if (this._audioFileAvailable) {
+    if (this.audioFile) {
       // Stop any potential playing sound
       this._audioElement.pause();
       this._progressBar.style.width = "0%";
@@ -83,17 +81,22 @@ export class SoundButton extends LitElement {
     }
   }
 
-  async playAudioFile(event) {
-    if (!this._audioFileAvailable || this.repeatable) {
+  async playOrStopSound(event) {
+    if ((this.audioFile && !this._audioElement) || this.repeatable) {
       this._audioElement = new Audio(this.audioFile);
-      this._audioFileAvailable = true;
       this._audioElement.addEventListener(
         "timeupdate",
         this.updateProgressBar.bind(this)
       );
     }
 
-    return this._audioElement.play();
+    const isPlaying = !this._audioElement.paused;
+    if (isPlaying) {
+      this._audioElement.pause();
+      this._audioElement.currentTime = 0;
+    } else {
+      await this._audioElement.play();
+    }
   }
 
   get _progressBar() {
