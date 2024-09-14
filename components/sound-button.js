@@ -17,7 +17,7 @@ export class SoundButton extends LitElement {
       position: relative;
     }
 
-    .button-content {
+    .content {
       flex: 1;
       align-self: stretch;
       display: flex;
@@ -27,7 +27,7 @@ export class SoundButton extends LitElement {
       text-align: center;
     }
 
-    .button-text {
+    .text {
       pointer-events: none;
     }
 
@@ -70,8 +70,10 @@ export class SoundButton extends LitElement {
 
     if (this.audioFile) {
       // Stop any potential playing sound
-      this._audioElement.pause();
-      this._progressBar.style.width = "0%";
+      this._audioElement?.pause();
+      if (this._progressBar) {
+        this._progressBar.style.width = "0%";
+      }
 
       this._audioElement = new Audio(this.audioFile);
       this._audioElement.addEventListener(
@@ -120,12 +122,12 @@ export class SoundButton extends LitElement {
   render() {
     return html`
       <button part="button">
-        <span class="button-content" draggable="true">
+        <span part="content" class="content" draggable="true">
           ${this.emoji
             ? html`<span class="button-emoji">${this.emoji}</span>`
             : null}
 
-          <span class="button-text">
+          <span class="text">
             <slot></slot>
           </span>
         </span>

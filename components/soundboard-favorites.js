@@ -222,6 +222,7 @@ export class SoundboardFavorites extends LitElement {
           emoji="${emoji}"
           exportparts="
             button: sound-button,
+            content: sound-button-content,
             progress: sound-button-progress
           "
         >

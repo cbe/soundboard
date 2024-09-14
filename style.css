@@ -160,6 +160,17 @@ soundboard-favorites::part(sound-button):focus {
   box-shadow: var(--box-shadow) var(--c-teal);
 }
 
+sound-button::part(content),
+soundboard-favorites::part(sound-button-content) {
+  flex-direction: column;
+}
+@container (min-width: 16rem) {
+  sound-button::part(content),
+  soundboard-favorites::part(sound-button-content) {
+    flex-direction: row;
+  }
+}
+
 sound-button::part(progress),
 soundboard-favorites::part(sound-button-progress) {
   background-color: var(--c-pink);
