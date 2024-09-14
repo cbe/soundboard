@@ -5,14 +5,17 @@ export class SoundButton extends LitElement {
     audioFile: { type: String, attribute: "audio-file" },
     emoji: { type: String, attribute: "emoji" },
     repeatable: { type: Boolean, attribute: "repeatable" },
+
     _audioFileAvailable: { type: Boolean, state: true },
-  }
+    _audioElement: { type: HTMLAudioElement, state: true },
+  };
 
   static styles = css`
     button {
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
 
     .button-content {
@@ -28,14 +31,30 @@ export class SoundButton extends LitElement {
     .button-text {
       pointer-events: none;
     }
+
+    .progress {
+      content: "";
+      position: absolute;
+      display: block;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      opacity 0;
+      height: 0.25rem;
+
+      transition: width 0.25s ease-in;
+    }
   `;
 
   constructor() {
     super();
+
     this.audioFile = "";
     this.emoji = "";
     this.repeatable = false;
+
     this._audioFileAvailable = false;
+    this._audioElement = undefined;
   }
 
   connectedCallback() {
@@ -52,35 +71,63 @@ export class SoundButton extends LitElement {
     super.attributeChangedCallback(...args);
 
     if (this._audioFileAvailable) {
-      this.audioElement = new Audio(this.audioFile);
+      // Stop any potential playing sound
+      this._audioElement.pause();
+      this._progressBar.style.width = "0%";
+
+      this._audioElement = new Audio(this.audioFile);
+      this._audioElement.addEventListener(
+        "timeupdate",
+        this.updateProgressBar.bind(this)
+      );
     }
   }
 
   async playAudioFile(event) {
     if (!this._audioFileAvailable || this.repeatable) {
-      this.audioElement = new Audio(this.audioFile);
+      this._audioElement = new Audio(this.audioFile);
       this._audioFileAvailable = true;
+      this._audioElement.addEventListener(
+        "timeupdate",
+        this.updateProgressBar.bind(this)
+      );
     }
 
-    return this.audioElement.play();
+    return this._audioElement.play();
+  }
+
+  get _progressBar() {
+    return this.renderRoot?.querySelector(".progress") ?? null;
+  }
+
+  updateProgressBar(event) {
+    const { currentTime, duration } = this._audioElement;
+
+    const percentage = (currentTime / duration) * 100;
+
+    this._progressBar.style.width = `${percentage}%`;
+    if (percentage == 100) {
+      // Wait a little bit before resetting the progress bar
+      window.setTimeout(() => {
+        this._progressBar.style.width = "0%";
+      }, 1000);
+    }
   }
 
   render() {
     return html`
       <button part="button">
-        <span
-          class="button-content"
-          draggable="true"
-        >
+        <span class="button-content" draggable="true">
           ${this.emoji
             ? html`<span class="button-emoji">${this.emoji}</span>`
-            : null
-          }
+            : null}
 
           <span class="button-text">
             <slot></slot>
           </span>
         </span>
+
+        <span part="progress" class="progress"></span>
       </button>
     `;
   }

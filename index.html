@@ -210,6 +210,7 @@
 
   <script>
     window.addEventListener("load", () => {
+      // Drag handling
       const onDragSoundButton = (event) => {
         const audioFile = event.target.getAttribute("audio-file");
         const title = event.target.innerText;
@@ -244,6 +245,7 @@
         soundButton.addEventListener("keydown", onCopy);
       });
 
+      // Scroll-dependant sticky favorites
       const favoritesContainer = document.querySelector("#favorites");
       const soundboardFavorites = document.querySelector("soundboard-favorites");
       const intersectionTrigger = document.querySelector("#intersection-trigger");

@@ -160,6 +160,15 @@ soundboard-favorites::part(sound-button):focus {
   box-shadow: var(--box-shadow) var(--c-teal);
 }
 
+sound-button::part(progress),
+soundboard-favorites::part(sound-button-progress) {
+  background-color: var(--c-pink);
+}
+sound-button:focus::part(progress),
+soundboard-favorites:focus::part(sound-button-progress) {
+  background-color: var(--c-teal);
+}
+
 @keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -171,6 +180,7 @@ soundboard-favorites::part(sound-button):focus {
   top: var(--spacing);
   animation: var(--animation-duration) ease-out 1 fade-in;
   pointer-events: none;
+  z-index: 1;
 }
 soundboard-favorites[minimal="true"]::part(dropzone) {
   padding: var(--spacing) calc(var(--spacing) * 2);

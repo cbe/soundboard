@@ -7,7 +7,7 @@ export class SoundboardFavorites extends LitElement {
     _favorites: { type: Array, state: true },
     _beingTargeted: { type: Boolean, state: true },
     _isRemoving: { type: Boolean, state: true },
-  }
+  };
 
   static styles = css`
     @keyframes wiggle {
@@ -99,6 +99,7 @@ export class SoundboardFavorites extends LitElement {
 
   constructor() {
     super();
+
     this.minimal = false;
     this.removed = [];
     this._beingTargeted = false;
@@ -219,7 +220,10 @@ export class SoundboardFavorites extends LitElement {
           @drop="${dropOnFavorite}"
           audio-file="${audioFile}"
           emoji="${emoji}"
-          exportparts="button: sound-button"
+          exportparts="
+            button: sound-button,
+            progress: sound-button-progress
+          "
         >
           ${title}
         </sound-button>
