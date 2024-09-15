@@ -118,20 +118,30 @@ body {
 .list-heading:nth-of-type(5n+4) { color: var(--c-teal); }
 .list-heading:nth-of-type(5n+5) { color: var(--c-lavender); }
 
-.list {
+.list,
+soundboard-favorites::part(list) {
   list-style-type: none;
   padding-left: 0;
   display: grid;
   gap: calc(var(--spacing) / 2);
 }
 @container (min-width: 16rem) {
-  .list { grid-template-columns: repeat(2, 1fr); }
+  .list,
+  soundboard-favorites::part(list) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @container (min-width: 30rem) {
-  .list { grid-template-columns: repeat(3, 1fr); }
+  .list,
+  soundboard-favorites::part(list) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 @container (min-width: 40rem) {
-  .list { grid-template-columns: repeat(6, 1fr); }
+  .list,
+  soundboard-favorites::part(list) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 .list:not(:last-child) {
   margin-bottom: var(--spacing);
@@ -175,7 +185,9 @@ sound-button::part(progress),
 soundboard-favorites::part(sound-button-progress) {
   background-color: var(--c-pink);
 }
+sound-button:hover::part(progress),
 sound-button:focus::part(progress),
+soundboard-favorites:hover::part(sound-button-progress),
 soundboard-favorites:focus::part(sound-button-progress) {
   background-color: var(--c-teal);
 }

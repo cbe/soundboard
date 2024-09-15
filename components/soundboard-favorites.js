@@ -1,4 +1,5 @@
 import { LitElement, css, html } from "../dependencies/lit-core.min.js";
+import { get, set } from "../dependencies/idb-keyval.min.js";
 
 export class SoundboardFavorites extends LitElement {
   static properties = {
@@ -11,35 +12,35 @@ export class SoundboardFavorites extends LitElement {
 
   static styles = css`
     @keyframes wiggle {
-      10% { rotate: -3deg; }
-      20% { rotate: -1deg; }
-      30% { rotate: -5deg; }
-      50% { rotate: 2deg; }
-      60% { rotate: -1deg; }
-      70% { rotate: 0deg; }
-      80% { rotate: -3deg; }
-      100% { rotate: 0deg; }
+      10% {
+        rotate: -3deg;
+      }
+      20% {
+        rotate: -1deg;
+      }
+      30% {
+        rotate: -5deg;
+      }
+      50% {
+        rotate: 2deg;
+      }
+      60% {
+        rotate: -1deg;
+      }
+      70% {
+        rotate: 0deg;
+      }
+      80% {
+        rotate: -3deg;
+      }
+      100% {
+        rotate: 0deg;
+      }
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
-    }
-
-    .favorites {
-      list-style-type: none;
-      padding-left: 0;
-      display: grid;
-      gap: calc(var(--spacing) / 2);
-    }
-    @container (min-width: 16rem) {
-      .favorites { grid-template-columns: repeat(2, 1fr); }
-    }
-    @container (min-width: 30rem) {
-      .favorites { grid-template-columns: repeat(3, 1fr); }
-    }
-    @container (min-width: 40rem) {
-      .favorites { grid-template-columns: repeat(6, 1fr); }
     }
 
     li:is(.dropzone--active),
@@ -110,11 +111,7 @@ export class SoundboardFavorites extends LitElement {
   connectedCallback() {
     super.connectedCallback();
 
-    const restoredFavorites = JSON.parse(window.localStorage.getItem("favorites")) ?? [];
-    const filteredFavorites = restoredFavorites
-      .filter((favorite) => !this.removed.includes(favorite.audioFile));
-
-    this.updateFavorites(filteredFavorites);
+    this.queryFavorites();
   }
 
   disconnectedCallback() {
@@ -125,15 +122,31 @@ export class SoundboardFavorites extends LitElement {
     return this._favorites.length > 0;
   }
 
-  findIndexOfAudioFile(searchAudioFile) {
-    return this._favorites
-      .findIndex(({ audioFile }) =>
-        audioFile === searchAudioFile);
+  async queryFavorites() {
+    // Ensure falling back to any previously stored favorites in LocalStorage
+    const fallbackFavorites = JSON.parse(
+      window.localStorage.getItem("favorites")
+    );
+
+    const restoredFavorites =
+      (await get("soundboard-favorites")) ?? fallbackFavorites ?? [];
+
+    this.updateFavorites(
+      restoredFavorites.filter(
+        (favorite) => !this.removed.includes(favorite.audioFile)
+      )
+    );
   }
 
-  updateFavorites(favorites) {
+  findIndexOfAudioFile(searchAudioFile) {
+    return this._favorites.findIndex(
+      ({ audioFile }) => audioFile === searchAudioFile
+    );
+  }
+
+  async updateFavorites(favorites) {
     this._favorites = favorites;
-    window.localStorage.setItem("favorites", JSON.stringify(favorites));
+    await set("soundboard-favorites", favorites);
   }
 
   resetOptics() {
@@ -148,12 +161,15 @@ export class SoundboardFavorites extends LitElement {
 
     const dragStartFavorite = (event) => {
       this._isRemoving = true;
-      event.dataTransfer.setData("text/plain", JSON.stringify({
-        audioFile,
-        title,
-        emoji,
-        removeFromFavorites: true,
-      }));
+      event.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({
+          audioFile,
+          title,
+          emoji,
+          removeFromFavorites: true,
+        })
+      );
     };
 
     const dragEndFavorite = (event) => {
@@ -184,30 +200,31 @@ export class SoundboardFavorites extends LitElement {
         } = JSON.parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
         const indexOfTargetedFavorite = this.findIndexOfAudioFile(audioFile);
-        const indexOfDraggedFavorite = this.findIndexOfAudioFile(draggedAudioFile);
+        const indexOfDraggedFavorite =
+          this.findIndexOfAudioFile(draggedAudioFile);
         const shouldReplace = indexOfDraggedFavorite === -1;
 
         const newFavorites = shouldReplace
-          ? this._favorites.map((favorite, index) => index === indexOfTargetedFavorite
-            ? ({
-              audioFile: draggedAudioFile,
-              title: draggedTitle,
-              emoji: draggedEmoji,
-            })
-            : favorite)
+          ? this._favorites.map((favorite, index) =>
+              index === indexOfTargetedFavorite
+                ? {
+                    audioFile: draggedAudioFile,
+                    title: draggedTitle,
+                    emoji: draggedEmoji,
+                  }
+                : favorite
+            )
           : this._favorites
-            .toSpliced(indexOfDraggedFavorite, 1)
-            .toSpliced(indexOfTargetedFavorite, 0, {
-              audioFile: draggedAudioFile,
-              title: draggedTitle,
-              emoji: draggedEmoji,
-            });
+              .toSpliced(indexOfDraggedFavorite, 1)
+              .toSpliced(indexOfTargetedFavorite, 0, {
+                audioFile: draggedAudioFile,
+                title: draggedTitle,
+                emoji: draggedEmoji,
+              });
 
         this.updateFavorites(newFavorites);
         event.target.classList.remove("targeted");
-      }
-      catch (_error) {
-      }
+      } catch (_error) {}
     };
 
     return html`
@@ -232,6 +249,24 @@ export class SoundboardFavorites extends LitElement {
     `;
   }
 
+  selectFiles(event) {
+    const uploadInput = document.createElement("input");
+    uploadInput.type = "file";
+    uploadInput.accept = "audio/*";
+    uploadInput.multiple = true;
+    uploadInput.addEventListener("change", () => {
+      this.handleDrop({
+        preventDefault: () => {}, // Required by `handleDrop`
+        dataTransfer: {
+          files: uploadInput.files,
+          getData: () => {}, // Required by `handleDrop`
+        },
+      });
+    });
+
+    uploadInput.click();
+  }
+
   handleDragEnter(event) {
     event.preventDefault();
   }
@@ -242,44 +277,96 @@ export class SoundboardFavorites extends LitElement {
     event.dataTransfer.dropEffect = "copy";
   }
 
-  handleDrop(event) {
+  async blobToDataUrl(blob) {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(blob);
+
+    return new Promise((resolve, reject) => {
+      fileReader.addEventListener("loadend", () => {
+        resolve(fileReader.result);
+      });
+    });
+  }
+
+  async handleDrop(event) {
     event.preventDefault();
 
     try {
-      const { audioFile, title, emoji, removeFromFavorites = false } = JSON
-        .parse(event.dataTransfer.getData("text/plain") ?? "{}");
+      const transferredFiles =
+        event.dataTransfer.files.length > 0
+          ? Array.from(
+              { length: event.dataTransfer.files.length },
+              (_, index) => event.dataTransfer.files.item(index)
+            ).filter((file) => file.type.startsWith("audio/"))
+          : [];
 
-      if (removeFromFavorites) {
-        const newFavorites = this._favorites
-          .filter((favorite) => favorite.audioFile !== audioFile);
+      const droppedButton = (() => {
+        try {
+          const { audioFile, emoji, title, removeFromFavorites } = JSON.parse(
+            event.dataTransfer.getData("text/plain") ?? "{}"
+          );
 
-        this.updateFavorites(newFavorites);
-        this.resetOptics();
+          return { audioFile, emoji, title, removeFromFavorites };
+        } catch (error) {
+          return undefined;
+        }
+      })();
+      const droppedFiles = await Promise.all(
+        transferredFiles.map(async (file) => {
+          const buffer = await file.arrayBuffer();
+          const blob = new Blob([buffer], { type: file.type });
+          const url = await this.blobToDataUrl(blob);
 
-        return;
-      }
+          return {
+            audioFile: url,
+            emoji: "🆕",
+            title: file.name,
+            removeFromFavorites: false,
+          };
+        })
+      );
+      const soundsToProcess = (droppedButton ? [droppedButton] : []).concat(
+        droppedFiles
+      );
 
-      const isValid = audioFile && audioFile !== "" && title;
-      const existingFavoriteIndex = this._favorites
-        .findIndex(({ audioFile: searchAudioFile }) =>
-          searchAudioFile === audioFile);
-      const alreadyFavorited = existingFavoriteIndex !== -1
+      await Promise.all(
+        soundsToProcess.map(async (sound) => {
+          const { audioFile, emoji, title, removeFromFavorites } = sound;
 
-      if (!isValid) {
-        this.resetOptics();
+          if (removeFromFavorites) {
+            const newFavorites = this._favorites.filter(
+              (favorite) => favorite.audioFile !== audioFile
+            );
 
-        return;
-      }
+            await this.updateFavorites(newFavorites);
 
-      const newFavorite = { audioFile, title, emoji };
-      const newFavorites = alreadyFavorited
-        ? this._favorites.toSpliced(existingFavoriteIndex, 1, newFavorite)
-        : this._favorites.concat([newFavorite]);
+            return;
+          }
 
-      this.updateFavorites(newFavorites);
-    }
-    catch (error) {
-      console.warn("Error while trying to add or remove a sound button. Full error", error)
+          const isValid =
+            audioFile !== undefined && audioFile !== "" && title !== undefined;
+          const existingFavoriteIndex = this._favorites.findIndex(
+            ({ audioFile: searchAudioFile }) => searchAudioFile === audioFile
+          );
+          const alreadyFavorited = existingFavoriteIndex !== -1;
+
+          if (!isValid) {
+            return;
+          }
+
+          const newFavorite = { audioFile, title, emoji };
+          const newFavorites = alreadyFavorited
+            ? this._favorites.toSpliced(existingFavoriteIndex, 1, newFavorite)
+            : this._favorites.concat([newFavorite]);
+
+          await this.updateFavorites(newFavorites);
+        })
+      );
+    } catch (error) {
+      console.warn(
+        "Error while trying to add or remove a sound button. Full error",
+        error
+      );
     }
 
     this.resetOptics();
@@ -295,24 +382,26 @@ export class SoundboardFavorites extends LitElement {
       "dropzone",
       this._beingTargeted ? "dropzone--active" : "",
       this._isRemoving ? "dropzone--removing" : "",
-    ].join(" ").trim();
+    ]
+      .join(" ")
+      .trim();
     const dropzoneIcon = this._isRemoving ? "🗑️" : "🫳";
     const dropzoneText = this._isRemoving
       ? "Remove"
       : this.hasFavorites
-        ? "Add"
-        : "Drop favorites here";
+      ? "Add"
+      : "Drop favorites here";
 
     return html`
-      <ul class="favorites">
+      <ul part="list">
         ${this.minimal
           ? null
-          : this._favorites.map((favorite) => this.renderFavourite(favorite))
-        }
+          : this._favorites.map((favorite) => this.renderFavourite(favorite))}
 
         <li
           class="${dropzoneClass}"
           part="dropzone"
+          @click="${this.selectFiles}"
           @dragenter="${this.handleDragEnter}"
           @dragover="${this.handleDragOver}"
           @drop="${this.handleDrop}"

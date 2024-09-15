@@ -38,7 +38,6 @@ export class SoundButton extends LitElement {
       left: 0;
       bottom: 0;
       width: 0;
-      opacity 0;
       height: 0.25rem;
 
       transition: width 0.25s ease-in;
