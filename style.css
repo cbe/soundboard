@@ -76,6 +76,7 @@ body {
   display: flex;
   flex-direction: column;
   hyphens: auto;
+  word-break: break-word;
 }
 
 .header {
