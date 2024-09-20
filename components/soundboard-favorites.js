@@ -1,4 +1,9 @@
-import { LitElement, css, html } from "../dependencies/lit-core.min.js";
+import {
+  LitElement,
+  css,
+  html,
+  nothing,
+} from "../dependencies/lit-core.min.js";
 import { get, set } from "../dependencies/idb-keyval.min.js";
 
 export class SoundboardFavorites extends LitElement {
@@ -154,7 +159,7 @@ export class SoundboardFavorites extends LitElement {
     this._isRemoving = false;
   }
 
-  renderFavourite({ audioFile, title, emoji }) {
+  renderFavourite({ audioFile, title, emoji, repeatable }) {
     if (!audioFile || !title) {
       return null;
     }
@@ -167,6 +172,7 @@ export class SoundboardFavorites extends LitElement {
           audioFile,
           title,
           emoji,
+          repeatable,
           removeFromFavorites: true,
         })
       );
@@ -197,6 +203,7 @@ export class SoundboardFavorites extends LitElement {
           audioFile: draggedAudioFile,
           title: draggedTitle,
           emoji: draggedEmoji,
+          repeatable: draggedRepeatable,
         } = JSON.parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
         const indexOfTargetedFavorite = this.findIndexOfAudioFile(audioFile);
@@ -211,6 +218,7 @@ export class SoundboardFavorites extends LitElement {
                     audioFile: draggedAudioFile,
                     title: draggedTitle,
                     emoji: draggedEmoji,
+                    repeatable: draggedRepeatable,
                   }
                 : favorite
             )
@@ -220,6 +228,7 @@ export class SoundboardFavorites extends LitElement {
                 audioFile: draggedAudioFile,
                 title: draggedTitle,
                 emoji: draggedEmoji,
+                repeatable: draggedRepeatable,
               });
 
         this.updateFavorites(newFavorites);
@@ -242,6 +251,7 @@ export class SoundboardFavorites extends LitElement {
             content: sound-button-content,
             progress: sound-button-progress
           "
+          repeatable="${repeatable || nothing}"
         >
           ${title}
         </sound-button>
@@ -302,11 +312,10 @@ export class SoundboardFavorites extends LitElement {
 
       const droppedButton = (() => {
         try {
-          const { audioFile, emoji, title, removeFromFavorites } = JSON.parse(
-            event.dataTransfer.getData("text/plain") ?? "{}"
-          );
+          const { audioFile, emoji, title, repeatable, removeFromFavorites } =
+            JSON.parse(event.dataTransfer.getData("text/plain") ?? "{}");
 
-          return { audioFile, emoji, title, removeFromFavorites };
+          return { audioFile, emoji, title, repeatable, removeFromFavorites };
         } catch (error) {
           return undefined;
         }
@@ -321,6 +330,7 @@ export class SoundboardFavorites extends LitElement {
             audioFile: url,
             emoji: "🆕",
             title: file.name,
+            repeatable: false,
             removeFromFavorites: false,
           };
         })
@@ -331,7 +341,8 @@ export class SoundboardFavorites extends LitElement {
 
       await Promise.all(
         soundsToProcess.map(async (sound) => {
-          const { audioFile, emoji, title, removeFromFavorites } = sound;
+          const { audioFile, emoji, title, repeatable, removeFromFavorites } =
+            sound;
 
           if (removeFromFavorites) {
             const newFavorites = this._favorites.filter(
@@ -354,7 +365,7 @@ export class SoundboardFavorites extends LitElement {
             return;
           }
 
-          const newFavorite = { audioFile, title, emoji };
+          const newFavorite = { audioFile, title, emoji, repeatable };
           const newFavorites = alreadyFavorited
             ? this._favorites.toSpliced(existingFavoriteIndex, 1, newFavorite)
             : this._favorites.concat([newFavorite]);

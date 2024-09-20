@@ -256,11 +256,13 @@
         const audioFile = event.target.getAttribute("audio-file");
         const title = event.target.innerText;
         const emoji = event.target.emoji;
+        const repeatable = event.target.repeatable;
 
         event.dataTransfer.setData("text/plain", JSON.stringify({
           audioFile,
           title,
           emoji,
+          repeatable,
         }));
         event.dataTransfer.effectAllowed = "copy";
       };
