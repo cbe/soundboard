@@ -6,6 +6,12 @@ import {
 } from "../dependencies/lit-core.min.js";
 import { get, set } from "../dependencies/idb-keyval.min.js";
 
+const moveElementInArray = (list, oldIndex, newIndex) => {
+  const listWithoutOldItem = list.toSpliced(oldIndex, 1);
+
+  return listWithoutOldItem.toSpliced(newIndex, 0, list[oldIndex]);
+};
+
 export class SoundboardFavorites extends LitElement {
   static properties = {
     minimal: { type: Boolean, attribute: "minimal" },
@@ -222,14 +228,11 @@ export class SoundboardFavorites extends LitElement {
                   }
                 : favorite
             )
-          : this._favorites
-              .toSpliced(indexOfDraggedFavorite, 1)
-              .toSpliced(indexOfTargetedFavorite, 0, {
-                audioFile: draggedAudioFile,
-                title: draggedTitle,
-                emoji: draggedEmoji,
-                repeatable: draggedRepeatable,
-              });
+          : moveElementInArray(
+              this._favorites,
+              indexOfDraggedFavorite,
+              indexOfTargetedFavorite
+            );
 
         this.updateFavorites(newFavorites);
         event.target.classList.remove("targeted");
