@@ -102,12 +102,39 @@ body {
 .header {
   padding: var(--spacing);
   margin-bottom: var(--spacing);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-bottom: var(--border-width) solid var(--c-rosewater);
 }
 
 .app-heading {
   color: var(--c-green);
   font-family: var(--heading-font-family);
+}
+
+.change-button-size {
+  border-radius: 100%;
+  padding: calc(var(--spacing) / 3);
+
+  & > input {
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+  }
+
+  &:has(> input)::before {
+    content: "🔍";
+  }
+  &:has(> input:checked)::before {
+    content: "🗜️";
+  }
+
+  &:has(> input:hover),
+  &:has(> input:focus) {
+    cursor: pointer;
+    text-shadow: var(--box-shadow) var(--c-teal);
+    filter: hue-rotate(300deg);
+  }
 }
 
 .favorites {
@@ -166,6 +193,13 @@ soundboard-favorites::part(list) {
 }
 .list:not(:last-child) {
   margin-bottom: var(--spacing);
+}
+.main--big-buttons .list,
+.main--big-buttons soundboard-favorites::part(list) {
+  --button-font-size: 1.5rem;
+
+  grid-template-columns: initial;
+  grid-auto-rows: minmax(calc(var(--spacing) * 6), min-content);
 }
 
 sound-button::part(button),
