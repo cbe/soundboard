@@ -308,17 +308,27 @@
     };
 
     // Change button size
-    const onChangeButtonSize = (event) => {
-      const { checked } = event.target;
+    const changeButtonSize = (size) => {
       const mainContainer = document.querySelector("#main");
       const label = document.querySelector("#change-button-size");
 
-      if (checked) {
+      if (size === "large") {
         mainContainer.classList.add("main--big-buttons");
-        label.setAttribute("title", label.getAttribute("title")?.replace("größer", "kleiner"))
+        label.setAttribute("title", label.getAttribute("title")?.replace("größer", "kleiner"));
       } else {
         mainContainer.classList.remove("main--big-buttons");
-        label.setAttribute("title", label.getAttribute("title")?.replace("kleiner", "größer"))
+        label.setAttribute("title", label.getAttribute("title")?.replace("kleiner", "größer"));
+      }
+    };
+    const onChangeButtonSize = (event) => {
+      const { checked } = event.target;
+
+      const buttonSize = checked ? "large" : undefined;
+      changeButtonSize(buttonSize);
+      if (buttonSize) {
+        window.localStorage.setItem("buttonSize", buttonSize);
+      } else {
+        window.localStorage.removeItem("buttonSize");
       }
     };
 
@@ -358,6 +368,15 @@
       { root: null }
     );
     observer.observe(intersectionTrigger);
+
+    // Restore settings
+    const initialButtonSize = window.localStorage.getItem("buttonSize");
+    if (initialButtonSize) {
+      changeButtonSize(initialButtonSize);
+      document
+        .querySelector("#change-button-size-checkbox")
+        .setAttribute("checked", initialButtonSize === "large");
+    }
   });
   </script>
 </body>
