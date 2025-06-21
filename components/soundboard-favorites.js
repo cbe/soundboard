@@ -134,13 +134,7 @@ export class SoundboardFavorites extends LitElement {
   }
 
   async queryFavorites() {
-    // Ensure falling back to any previously stored favorites in LocalStorage
-    const fallbackFavorites = JSON.parse(
-      window.localStorage.getItem("favorites")
-    );
-
-    const restoredFavorites =
-      (await get("soundboard-favorites")) ?? fallbackFavorites ?? [];
+    const restoredFavorites = (await get("soundboard-favorites")) ?? [];
 
     this.updateFavorites(
       restoredFavorites.filter(
